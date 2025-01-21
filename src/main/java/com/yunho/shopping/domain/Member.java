@@ -7,6 +7,8 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.util.Objects;
+
 @Getter
 @ToString(callSuper = true)
 @Entity
@@ -14,8 +16,8 @@ import lombok.ToString;
 public class Member extends AuditingFields {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Column(length = 50)
+    private String userId;
 
     @Setter
     @NotBlank(message = "이메일을 입력해주세요.")
@@ -48,6 +50,40 @@ public class Member extends AuditingFields {
     @Column(length = 1000)
     private String introduction;
 
-    @Setter
-    private String profileImgPath;
+    public Member(String userId, String email, String password, String name, String phoneNumber, int age, Gender gender, String introduction, String createdBy) {
+        this.userId = userId;
+        this.email = email;
+        this.password = password;
+        this.name = name;
+        this.phoneNumber = phoneNumber;
+        this.age = age;
+        this.gender = gender;
+        this.introduction = introduction;
+        this.createdBy = createdBy;
+        this.modifiedBy = createdBy;
+    }
+
+    protected Member(){
+
+    }
+
+    public static Member of(String userId, String email, String password, String name, String phoneNumber, int age, Gender gender, String introduction){
+        return Member.of(userId, email, password, name, phoneNumber, age, gender, introduction, null);
+    }
+
+    public static Member of(String userId, String email, String password, String name, String phoneNumber, int age, Gender gender, String introduction, String createdBy){
+        return new Member(userId, email, password, name, phoneNumber, age, gender, introduction, createdBy);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(this.getUserId());
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(this == obj) return true;
+        if(!(obj instanceof Member that)) return false;
+        return this.getUserId() != null && this.getUserId().equals(that.getUserId());
+    }
 }
