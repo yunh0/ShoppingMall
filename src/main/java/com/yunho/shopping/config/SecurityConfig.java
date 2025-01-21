@@ -19,7 +19,8 @@ public class SecurityConfig {
                         .requestMatchers("/api/**").permitAll()
                         .requestMatchers(
                                 HttpMethod.GET,
-                                "/"
+                                "/",
+                                "/index"
                         ).permitAll()
                         .anyRequest().authenticated()
                 )

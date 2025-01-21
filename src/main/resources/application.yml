@@ -22,3 +22,8 @@ spring:
     properties:
       hibernate.format_sql: true
       hibernate.default_batch_fetch_size: 100
+  sql:
+    init:
+      mode: always
+  thymeleaf3:
+    decoupled-logic: true
