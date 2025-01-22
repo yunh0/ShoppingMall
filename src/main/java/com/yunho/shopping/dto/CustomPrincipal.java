@@ -146,7 +146,7 @@ public record CustomPrincipal(
 
     @Override
     public String getName() {
-        return username;
+        return name;
     }
 
     @Getter

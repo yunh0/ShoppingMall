@@ -21,7 +21,7 @@ public record KakaoOAuth2Response(
             Boolean isEmailVerified,
             String email
     ){
-        public record Profile(String nickname){
+        public record Profile(String name){
             public static Profile from(Map<String, Object> attributes){
                 return new Profile(String.valueOf(attributes.get("nickname")));
             }
@@ -39,8 +39,8 @@ public record KakaoOAuth2Response(
             );
         }
 
-        public String nickname(){
-            return this.profile.nickname();
+        public String name(){
+            return this.profile.name();
         }
 
     }
@@ -61,7 +61,7 @@ public record KakaoOAuth2Response(
         return this.kaKaoAccount().email();
     }
 
-    public String nickname(){
-        return this.kaKaoAccount.nickname();
+    public String name(){
+        return this.kaKaoAccount.name();
     }
 }

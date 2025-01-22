@@ -35,8 +35,7 @@ public class Member extends AuditingFields {
     private String name;
 
     @Setter
-    @NotBlank(message = "전화번호를 입력해주세요.")
-    @Column(length = 15, nullable = false)
+    @Column(length = 15)
     private String phoneNumber;
 
     @Setter

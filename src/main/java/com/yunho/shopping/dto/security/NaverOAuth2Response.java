@@ -6,7 +6,7 @@ import java.util.Map;
 public record NaverOAuth2Response(
         String id,
         String email,
-        String nickname
+        String name
 ) {
     public static NaverOAuth2Response from(Map<String, Object> attributes){
         Map<String, Object> response = (Map<String, Object>) attributes.get("response");
@@ -22,7 +22,7 @@ public record NaverOAuth2Response(
         return this.email;
     }
 
-    public String nickname(){
-        return this.nickname;
+    public String name(){
+        return this.name;
     }
 }

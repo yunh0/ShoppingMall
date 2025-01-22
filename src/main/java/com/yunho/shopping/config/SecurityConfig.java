@@ -90,13 +90,13 @@ public class SecurityConfig {
                     KakaoOAuth2Response kakaoOAuth2Response = KakaoOAuth2Response.from(attributes);
                     providerId = String.valueOf(kakaoOAuth2Response.id());
                     email = kakaoOAuth2Response.email();
-                    name = kakaoOAuth2Response.nickname();
+                    name = kakaoOAuth2Response.name();
                 }
                 case "naver" -> {
                     NaverOAuth2Response naverOAuth2Response = NaverOAuth2Response.from(attributes);
                     providerId = String.valueOf(naverOAuth2Response.id());
                     email = naverOAuth2Response.email();
-                    name = naverOAuth2Response.nickname();
+                    name = naverOAuth2Response.name();
                 }
                 default -> throw new IllegalArgumentException("지원하지 않습니다. : " + registrationId);
             }
