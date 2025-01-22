@@ -11,7 +11,7 @@ public record MemberDto(
         String password,
         String name,
         String phoneNumber,
-        int age,
+        Integer age,
         Gender gender,
         String introduction,
         LocalDateTime createdAt,
@@ -26,7 +26,7 @@ public record MemberDto(
             String password,
             String name,
             String phoneNumber,
-            int age,
+            Integer age,
             Gender gender,
             String introduction
     ){
@@ -39,7 +39,7 @@ public record MemberDto(
             String password,
             String name,
             String phoneNumber,
-            int age,
+            Integer age,
             Gender gender,
             String introduction,
             LocalDateTime createdAt,

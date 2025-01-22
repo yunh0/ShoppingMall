@@ -29,7 +29,7 @@ public class MemberService {
             String password,
             String name,
             String phoneNumber,
-            int age,
+            Integer age,
             Gender gender,
             String introduction
     ){

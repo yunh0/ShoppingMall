@@ -40,7 +40,7 @@ public class Member extends AuditingFields {
     private String phoneNumber;
 
     @Setter
-    private int age;
+    private Integer age;
 
     @Setter
     @Enumerated(value = EnumType.STRING)
@@ -50,7 +50,7 @@ public class Member extends AuditingFields {
     @Column(length = 1000)
     private String introduction;
 
-    public Member(String userId, String email, String password, String name, String phoneNumber, int age, Gender gender, String introduction, String createdBy) {
+    public Member(String userId, String email, String password, String name, String phoneNumber, Integer age, Gender gender, String introduction, String createdBy) {
         this.userId = userId;
         this.email = email;
         this.password = password;
@@ -67,11 +67,11 @@ public class Member extends AuditingFields {
 
     }
 
-    public static Member of(String userId, String email, String password, String name, String phoneNumber, int age, Gender gender, String introduction){
+    public static Member of(String userId, String email, String password, String name, String phoneNumber, Integer age, Gender gender, String introduction){
         return Member.of(userId, email, password, name, phoneNumber, age, gender, introduction, null);
     }
 
-    public static Member of(String userId, String email, String password, String name, String phoneNumber, int age, Gender gender, String introduction, String createdBy){
+    public static Member of(String userId, String email, String password, String name, String phoneNumber, Integer age, Gender gender, String introduction, String createdBy){
         return new Member(userId, email, password, name, phoneNumber, age, gender, introduction, createdBy);
     }
 
