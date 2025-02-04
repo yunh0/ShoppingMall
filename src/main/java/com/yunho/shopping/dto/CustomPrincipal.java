@@ -1,6 +1,5 @@
 package com.yunho.shopping.dto;
 
-import com.yunho.shopping.domain.constant.Gender;
 import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -18,10 +17,6 @@ public record CustomPrincipal(
         Collection<? extends GrantedAuthority> authorities,
         String email,
         String name,
-        String phoneNumber,
-        Integer age,
-        Gender gender,
-        String introduction,
         Map<String, Object> oAuth2Attributes
 ) implements UserDetails, OAuth2User {
 
@@ -29,21 +24,13 @@ public record CustomPrincipal(
             String username,
             String password,
             String email,
-            String name,
-            String phoneNumber,
-            Integer age,
-            Gender gender,
-            String introduction
+            String name
     ){
         return CustomPrincipal.of(
                 username,
                 password,
                 email,
                 name,
-                phoneNumber,
-                age,
-                gender,
-                introduction,
                 Map.of()
         );
     }
@@ -53,10 +40,6 @@ public record CustomPrincipal(
             String password,
             String email,
             String name,
-            String phoneNumber,
-            Integer age,
-            Gender gender,
-            String introduction,
             Map<String, Object> oAuth2Attributes
     ){
         Set<RoleType> roleTypes = Set.of(RoleType.USER);
@@ -70,10 +53,6 @@ public record CustomPrincipal(
                         .collect(Collectors.toUnmodifiableSet()),
                 email,
                 name,
-                phoneNumber,
-                age,
-                gender,
-                introduction,
                 oAuth2Attributes
         );
     }
@@ -83,11 +62,7 @@ public record CustomPrincipal(
                 dto.userId(),
                 dto.password(),
                 dto.email(),
-                dto.name(),
-                dto.phoneNumber(),
-                dto.age(),
-                dto.gender(),
-                dto.introduction()
+                dto.name()
         );
     }
 
@@ -96,11 +71,7 @@ public record CustomPrincipal(
                 username,
                 email,
                 password,
-                name,
-                phoneNumber,
-                age,
-                gender,
-                introduction
+                name
         );
     }
 

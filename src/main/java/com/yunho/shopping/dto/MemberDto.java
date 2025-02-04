@@ -1,19 +1,16 @@
 package com.yunho.shopping.dto;
 
 import com.yunho.shopping.domain.Member;
-import com.yunho.shopping.domain.constant.Gender;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 public record MemberDto(
         String userId,
         String email,
         String password,
         String name,
-        String phoneNumber,
-        Integer age,
-        Gender gender,
-        String introduction,
+        ProfileDto profileDto,
         LocalDateTime createdAt,
         String createdBy,
         LocalDateTime modifiedAt,
@@ -24,13 +21,9 @@ public record MemberDto(
             String userId,
             String email,
             String password,
-            String name,
-            String phoneNumber,
-            Integer age,
-            Gender gender,
-            String introduction
+            String name
     ){
-        return new MemberDto(userId, email, password, name, phoneNumber, age, gender, introduction, null, null, null, null);
+        return MemberDto.of(userId, email, password, name, null, null, null, null, null);
     }
 
     public static MemberDto of(
@@ -38,16 +31,23 @@ public record MemberDto(
             String email,
             String password,
             String name,
-            String phoneNumber,
-            Integer age,
-            Gender gender,
-            String introduction,
+            ProfileDto profileDto
+    ){
+        return MemberDto.of(userId, email, password, name, profileDto, null, null, null, null);
+    }
+
+    public static MemberDto of(
+            String userId,
+            String email,
+            String password,
+            String name,
+            ProfileDto profileDto,
             LocalDateTime createdAt,
             String createdBy,
             LocalDateTime modifiedAt,
             String modifiedBy
     ){
-        return new MemberDto(userId, email, password, name, phoneNumber, age, gender, introduction, createdAt, createdBy, modifiedAt, modifiedBy);
+        return new MemberDto(userId, email, password, name, profileDto, createdAt, createdBy, modifiedAt, modifiedBy);
     }
 
     public static MemberDto from(Member member){
@@ -56,10 +56,9 @@ public record MemberDto(
                 member.getEmail(),
                 member.getPassword(),
                 member.getName(),
-                member.getPhoneNumber(),
-                member.getAge(),
-                member.getGender(),
-                member.getIntroduction(),
+                Optional.ofNullable(member.getProfile())
+                                .map(ProfileDto::from)
+                                .orElse(null),
                 member.getCreatedAt(),
                 member.getCreatedBy(),
                 member.getModifiedAt(),
@@ -68,6 +67,6 @@ public record MemberDto(
     }
 
     public Member toEntity(){
-        return Member.of(userId, email, password, name, phoneNumber, age, gender, introduction);
+        return Member.of(userId, email, password, name);
     }
 }

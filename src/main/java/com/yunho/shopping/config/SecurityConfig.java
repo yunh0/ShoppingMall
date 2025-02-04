@@ -1,15 +1,17 @@
 package com.yunho.shopping.config;
 
 import com.yunho.shopping.dto.CustomPrincipal;
+import com.yunho.shopping.dto.MemberDto;
 import com.yunho.shopping.dto.security.KakaoOAuth2Response;
 import com.yunho.shopping.dto.security.NaverOAuth2Response;
 import com.yunho.shopping.service.MemberService;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
@@ -20,6 +22,7 @@ import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.SecurityFilterChain;
 
+import java.io.IOException;
 import java.util.Map;
 import java.util.UUID;
 
@@ -32,22 +35,35 @@ public class SecurityConfig {
             OAuth2UserService<OAuth2UserRequest, OAuth2User> oAuth2UserService
     ) throws Exception {
         return httpSecurity
+                .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
                         .requestMatchers("/api/**").permitAll()
                         .requestMatchers(
                                 HttpMethod.GET,
                                 "/",
-                                "/index"
+                                "/index",
+                                "/signin",
+                                "/signup",
+                                "/signup/profile"
+                        ).permitAll()
+                        .requestMatchers(
+                                HttpMethod.POST,
+                                "/signup",
+                                "/signup/profile"
                         ).permitAll()
                         .anyRequest().authenticated()
                 )
-                .formLogin(Customizer.withDefaults())
+                .formLogin(
+                        auth -> auth.loginPage("/signin")
+                                .loginProcessingUrl("/signin")
+                                .defaultSuccessUrl("/", true)
+                                .permitAll()
+                )
                 .logout(logout -> logout.logoutSuccessUrl("/"))
-                .oauth2Login(oAuth ->
-                        oAuth.userInfoEndpoint(userInfo ->
-                                userInfo.userService(oAuth2UserService)
-                        )
+                .oauth2Login(oAuth -> oAuth
+                        .loginPage("/signin")
+                        .userInfoEndpoint(userInfo -> userInfo.userService(oAuth2UserService))
                 )
                 .build();
     }
@@ -65,7 +81,8 @@ public class SecurityConfig {
     @Bean
     public OAuth2UserService<OAuth2UserRequest, OAuth2User> oAuth2UserService(
             MemberService memberService,
-            PasswordEncoder passwordEncoder
+            PasswordEncoder passwordEncoder,
+            HttpServletResponse response
     ){
         final DefaultOAuth2UserService delegate = new DefaultOAuth2UserService();
 
@@ -106,20 +123,19 @@ public class SecurityConfig {
 
             return memberService.searchMember(username)
                     .map(CustomPrincipal::from)
-                    .orElseGet(() ->
-                            CustomPrincipal.from(
-                                    memberService.saveMember(
-                                            username,
-                                            email,
-                                            dummyPassword,
-                                            name,
-                                            null,
-                                            null,
-                                            null,
-                                            null
-                                    )
-                            )
-                    );
+                    .orElseGet(() ->{
+                        MemberDto tempMember = MemberDto.of(username, email, dummyPassword, name);
+
+                        memberService.storeTempMemberInSession(tempMember);
+
+                        try {
+                            response.sendRedirect("/signup/profile");
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
+
+                        return CustomPrincipal.from(tempMember);
+                    });
         };
     }
 
