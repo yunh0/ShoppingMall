@@ -6,6 +6,7 @@ import com.yunho.shopping.dto.ProfileDto;
 import com.yunho.shopping.dto.request.ProfileRequest;
 import com.yunho.shopping.dto.request.SignUpRequest;
 import com.yunho.shopping.service.MemberService;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -77,5 +78,18 @@ public class MemberController {
         memberService.updateProfile(principal.getUsername(), profileRequest.toDto());
 
         return "redirect:/";
+    }
+
+    @GetMapping("/myPage")
+    public String myPage(
+            @AuthenticationPrincipal CustomPrincipal principal,
+            Model model
+    ){
+        MemberDto memberDto = memberService.searchMember(principal.getUsername())
+                .orElseThrow(() -> new EntityNotFoundException("사용자를 찾을 수 없습니다. username: " + principal.getUsername()));
+
+        model.addAttribute("member", memberDto);
+
+        return "/myPage";
     }
 }
