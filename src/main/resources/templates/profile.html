@@ -24,7 +24,7 @@
 
 <div class="container">
     <div class="card p-4">
-        <h2 class="text-center">회원가입</h2>
+        <h2 class="text-center">프로필 설정</h2>
         <form id="signupForm" th:action="@{/signup/profile}" method="post" th:object="${profileRequest}">
             <div class="mb-3">
                 <label for="phoneNumber" class="form-label">전화번호</label>
@@ -61,7 +61,7 @@
                 </div>
             </div>
 
-            <button type="submit" class="btn btn-primary w-100">회원가입</button>
+            <button type="submit" class="btn btn-primary w-100">저장</button>
         </form>
     </div>
 </div>

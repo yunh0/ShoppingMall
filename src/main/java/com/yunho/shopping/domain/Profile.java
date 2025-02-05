@@ -19,16 +19,16 @@ public class Profile extends AuditingFields {
     private Long profileId;
 
     @Setter
-    @Column(length = 15, nullable = false)
+    @Column(length = 15)
     private String phoneNumber;
 
     @Setter
-    @Column(nullable = false)
+    @Column
     private Integer age;
 
     @Setter
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @Column
     private Gender gender;
 
     @Setter

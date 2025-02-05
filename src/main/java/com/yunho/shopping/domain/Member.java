@@ -29,6 +29,7 @@ public class Member extends AuditingFields {
     @Column(length = 100, nullable = false)
     private String name;
 
+    @Setter
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "profile_id", unique = true)
     private Profile profile;

@@ -18,6 +18,15 @@ public record ProfileDto(
 ) {
 
     public static ProfileDto of(
+            String phoneNumber,
+            Integer age,
+            Gender gender,
+            String introduction
+    ){
+        return ProfileDto.of(null, phoneNumber, age, gender, introduction, null, null, null, null);
+    }
+
+    public static ProfileDto of(
             Long profileId,
             String phoneNumber,
             Integer age,

@@ -1,5 +1,6 @@
 package com.yunho.shopping.controller;
 
+import com.yunho.shopping.dto.CustomPrincipal;
 import com.yunho.shopping.dto.MemberDto;
 import com.yunho.shopping.dto.ProfileDto;
 import com.yunho.shopping.dto.request.ProfileRequest;
@@ -7,6 +8,7 @@ import com.yunho.shopping.dto.request.SignUpRequest;
 import com.yunho.shopping.service.MemberService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -40,18 +42,17 @@ public class MemberController {
             return "/signup";
         }
 
-        ProfileDto profileDto = memberService.saveProfile(
-                signupRequest.getPhoneNumber(),
-                signupRequest.getAge(),
-                signupRequest.getGender(),
-                signupRequest.getIntroduction()
-        );
         MemberDto memberDto = memberService.saveMember(
                 signupRequest.getUserId(),
                 signupRequest.getEmail(),
                 signupRequest.getPassword(),
                 signupRequest.getName(),
-                profileDto
+                ProfileDto.of(
+                        signupRequest.getPhoneNumber(),
+                        signupRequest.getAge(),
+                        signupRequest.getGender(),
+                        signupRequest.getIntroduction()
+                )
         );
 
         return "redirect:/signin";
@@ -66,30 +67,14 @@ public class MemberController {
     @PostMapping("/signup/profile")
     public String signUpWithOAuth2(
             @Valid @ModelAttribute("profileRequest") ProfileRequest profileRequest,
-            BindingResult bindingResult
+            BindingResult bindingResult,
+            @AuthenticationPrincipal CustomPrincipal principal
     ) {
         if (bindingResult.hasErrors()) {
             return "/profile";
         }
 
-        ProfileDto profileDto = memberService.saveProfile(
-                profileRequest.getPhoneNumber(),
-                profileRequest.getAge(),
-                profileRequest.getGender(),
-                profileRequest.getIntroduction()
-        );
-
-        MemberDto tempMember = memberService.getTempMemberFromSession();
-
-        MemberDto memberDto = memberService.saveMember(
-                tempMember.userId(),
-                tempMember.email(),
-                tempMember.password(),
-                tempMember.name(),
-                profileDto
-        );
-
-        memberService.clearTempMemberSession();
+        memberService.updateProfile(principal.getUsername(), profileRequest.toDto());
 
         return "redirect:/";
     }

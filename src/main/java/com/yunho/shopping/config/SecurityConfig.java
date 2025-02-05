@@ -1,7 +1,6 @@
 package com.yunho.shopping.config;
 
 import com.yunho.shopping.dto.CustomPrincipal;
-import com.yunho.shopping.dto.MemberDto;
 import com.yunho.shopping.dto.security.KakaoOAuth2Response;
 import com.yunho.shopping.dto.security.NaverOAuth2Response;
 import com.yunho.shopping.service.MemberService;
@@ -124,17 +123,21 @@ public class SecurityConfig {
             return memberService.searchMember(username)
                     .map(CustomPrincipal::from)
                     .orElseGet(() ->{
-                        MemberDto tempMember = MemberDto.of(username, email, dummyPassword, name);
-
-                        memberService.storeTempMemberInSession(tempMember);
-
                         try {
                             response.sendRedirect("/signup/profile");
                         } catch (IOException e) {
                             throw new RuntimeException(e);
                         }
 
-                        return CustomPrincipal.from(tempMember);
+                        return CustomPrincipal.from(
+                                memberService.saveMember(
+                                        username,
+                                        email,
+                                        dummyPassword,
+                                        name,
+                                        null
+                                )
+                        );
                     });
         };
     }
