@@ -75,7 +75,7 @@ public class MemberController {
             return "/profile";
         }
 
-        memberService.updateProfile(principal.getUsername(), profileRequest.toDto());
+        memberService.setProfile(principal.getUsername(), profileRequest.toDto());
 
         return "redirect:/";
     }
@@ -91,5 +91,25 @@ public class MemberController {
         model.addAttribute("member", memberDto);
 
         return "/myPage";
+    }
+
+    @PostMapping("/myPage")
+    public String updateProfile(
+            @Valid @ModelAttribute("profileRequest") ProfileRequest profileRequest,
+            BindingResult bindingResult,
+            @AuthenticationPrincipal CustomPrincipal principal,
+            Model model
+    ){
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("errors", bindingResult.getAllErrors());
+            model.addAttribute("member", memberService.searchMember(principal.getUsername())
+                    .orElseThrow(() -> new EntityNotFoundException("사용자를 찾을 수 없습니다. username: " + principal.getUsername())));
+
+            return "/myPage";
+        }
+
+        memberService.updateProfile(principal.getUsername(), profileRequest.toDto());
+
+        return "redirect:/myPage";
     }
 }

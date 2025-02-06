@@ -43,12 +43,28 @@ public class MemberService {
         return MemberDto.from(member);
     }
 
-    public void updateProfile(String username, ProfileDto profileDto){
+    public void setProfile(String username, ProfileDto profileDto){
         Member member = memberRepository.findById(username)
                 .orElseThrow(() -> new EntityNotFoundException("사용자를 찾을 수 없습니다. username: " + username));
 
         if(profileDto != null){
             member.setProfile(profileDto.toEntity());
+        }
+    }
+
+    public void updateProfile(String username, ProfileDto profileDto){
+        Member member = memberRepository.findById(username)
+                .orElseThrow(() -> new EntityNotFoundException("사용자를 찾을 수 없습니다. username: " + username));
+
+        Profile profile = member.getProfile();
+        if(profile == null){
+            member.setProfile(profileDto.toEntity());
+        }
+        else{
+            profile.setPhoneNumber(profileDto.phoneNumber());
+            profile.setAge(profileDto.age());
+            profile.setGender(profileDto.gender());
+            profile.setIntroduction(profileDto.introduction());
         }
     }
 }

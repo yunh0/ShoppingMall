@@ -5,6 +5,41 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>마이페이지</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script>
+        function enableEdit() {
+            document.querySelectorAll('.editable').forEach(input => {
+                input.removeAttribute('disabled');
+            });
+
+            document.getElementById('saveCancelButtons').style.display = 'block';
+            document.getElementById('editButton').style.display = 'none';
+        }
+
+        function cancelEdit() {
+            document.querySelectorAll('.editable').forEach(input => {
+                input.value = input.getAttribute("data-original");
+                input.setAttribute('disabled', true);
+            });
+
+            document.getElementById('saveCancelButtons').style.display = 'none';
+            document.getElementById('editButton').style.display = 'block';
+        }
+
+        document.addEventListener("DOMContentLoaded", function () {
+            const form = document.getElementById("profileForm");
+            form.addEventListener("submit", function (event) {
+                document.querySelectorAll('.editable').forEach(input => {
+                    input.removeAttribute('disabled');
+                });
+            });
+
+            const genderSelect = document.querySelector('select[name="gender"]');
+            const initialGender = genderSelect.getAttribute("data-original");
+            if (initialGender) {
+                genderSelect.value = initialGender;
+            }
+        });
+    </script>
 </head>
 <body>
 <header id="header">
@@ -14,19 +49,54 @@
 <div class="container">
     <h2 class="mt-4">마이페이지</h2>
     <br><br>
-    <div class="card p-4">
-        <p><strong>이름:</strong> <span th:text="${member.name}"></span></p>
-        <p><strong>이메일:</strong> <span th:text="${member.email}"></span></p>
+    <div th:if="${errors != null}" class="alert alert-danger">
+        <span th:each="error : ${errors}" th:text="${error.defaultMessage}"></span><br/>
+    </div>
 
-        <div th:if="${member.profileDto != null}">
-            <p><strong>전화번호:</strong> <span th:text="${member.profileDto.phoneNumber}"></span></p>
-            <p><strong>나이:</strong> <span th:text="${member.profileDto.age}"></span></p>
-            <p><strong>성별:</strong> <span th:text="${member.profileDto.gender}"></span></p>
-            <p><strong>소개:</strong> <span th:text="${member.profileDto.introduction}"></span></p>
-        </div>
-        <div th:if="${member.profileDto == null}">
-            <p>등록된 프로필 정보가 없습니다.</p>
-        </div>
+    <div class="card p-4">
+        <form id="profileForm" th:action="@{/myPage}" method="post">
+            <p><strong>이름:</strong>
+                <span th:text="${member.name}"></span>
+            </p>
+            <p><strong>이메일:</strong>
+                <span th:text="${member.email}"></span>
+            </p>
+
+            <div>
+                <p><strong>전화번호:</strong>
+                    <input type="text" name="phoneNumber" class="form-control editable"
+                           th:value="${member.profileDto != null ? member.profileDto.phoneNumber : ''}"
+                           th:attr="data-original=${member.profileDto != null ? member.profileDto.phoneNumber : ''}" disabled>
+                </p>
+                <p><strong>나이:</strong>
+                    <input type="number" name="age" class="form-control editable"
+                           th:value="${member.profileDto != null and member.profileDto.age != 0 ? member.profileDto.age : ''}"
+                           th:attr="data-original=${member.profileDto != null and member.profileDto.age != 0 ? member.profileDto.age : ''}" disabled>
+                </p>
+                <p><strong>성별:</strong>
+                    <select name="gender" class="form-select editable"
+                            th:attr="data-original=${member.profileDto != null ? member.profileDto.gender : ''}" disabled>
+                        <option value=""></option>
+                        <option value="MAN" th:selected="${member.profileDto != null and member.profileDto.gender == 'MAN'}">남자</option>
+                        <option value="WOMAN" th:selected="${member.profileDto != null and member.profileDto.gender == 'WOMAN'}">여자</option>
+                    </select>
+                </p>
+
+                <p><strong>소개:</strong>
+                    <textarea name="introduction" class="form-control editable"
+                              th:text="${member.profileDto != null ? member.profileDto.introduction : ''}"
+                              th:attr="data-original=${member.profileDto != null ? member.profileDto.introduction : ''}" disabled></textarea>
+                </p>
+            </div>
+
+            <div class="mt-3">
+                <button type="button" id="editButton" class="btn btn-primary" onclick="enableEdit()">수정</button>
+                <div id="saveCancelButtons" style="display: none;">
+                    <button type="submit" class="btn btn-success">저장</button>
+                    <button type="button" class="btn btn-secondary" onclick="cancelEdit()">취소</button>
+                </div>
+            </div>
+        </form>
     </div>
 </div>
 <footer id="footer">
