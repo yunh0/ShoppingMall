@@ -1,0 +1,2 @@
+INSERT INTO member (user_id, email, password, name, role_type, created_at, modified_at, created_by, modified_by)
+VALUES ('test' ,'test@test.com', '{noop}qwer1234', 'John', 'SELLER', '2025-02-10 17:50:00', '2025-02-10 17:50:00', 'yunho', 'yunho');
