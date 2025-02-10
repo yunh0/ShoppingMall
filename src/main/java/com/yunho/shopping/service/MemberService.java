@@ -38,7 +38,7 @@ public class MemberService {
 
         Profile profile = (profileDto != null) ? profileDto.toEntity() : null;
 
-        Member member = memberRepository.save(Member.of(userId, email, encodedPassword, name, profile));
+        Member member = memberRepository.save(Member.of(userId, email, encodedPassword, name, profile, name));
 
         return MemberDto.from(member);
     }
