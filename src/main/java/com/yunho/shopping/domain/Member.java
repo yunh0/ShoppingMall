@@ -1,5 +1,6 @@
 package com.yunho.shopping.domain;
 
+import com.yunho.shopping.domain.constant.RoleType;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -28,6 +29,10 @@ public class Member extends AuditingFields {
     @Setter
     @Column(length = 100, nullable = false)
     private String name;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private RoleType roleType = RoleType.USER;
 
     @Setter
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)

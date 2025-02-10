@@ -1,5 +1,6 @@
 package com.yunho.shopping.config;
 
+import com.yunho.shopping.domain.constant.RoleType;
 import com.yunho.shopping.dto.CustomPrincipal;
 import com.yunho.shopping.dto.security.KakaoOAuth2Response;
 import com.yunho.shopping.dto.security.NaverOAuth2Response;
@@ -8,7 +9,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -37,20 +37,8 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
-                        .requestMatchers("/api/**").permitAll()
-                        .requestMatchers(
-                                HttpMethod.GET,
-                                "/",
-                                "/index",
-                                "/signin",
-                                "/signup",
-                                "/signup/profile"
-                        ).permitAll()
-                        .requestMatchers(
-                                HttpMethod.POST,
-                                "/signup",
-                                "/signup/profile"
-                        ).permitAll()
+                        .requestMatchers("/", "/index", "/signin", "/signup").permitAll()
+                        .requestMatchers("/seller/**").hasAuthority(RoleType.USER.getRoleName())
                         .anyRequest().authenticated()
                 )
                 .formLogin(

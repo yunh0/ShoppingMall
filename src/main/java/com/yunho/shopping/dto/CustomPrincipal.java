@@ -1,6 +1,6 @@
 package com.yunho.shopping.dto;
 
-import lombok.Getter;
+import com.yunho.shopping.domain.constant.RoleType;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -9,12 +9,11 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 public record CustomPrincipal(
         String username,
         String password,
-        Collection<? extends GrantedAuthority> authorities,
+        RoleType roleType,
         String email,
         String name,
         Map<String, Object> oAuth2Attributes
@@ -23,12 +22,14 @@ public record CustomPrincipal(
     public static CustomPrincipal of(
             String username,
             String password,
+            RoleType roleType,
             String email,
             String name
     ){
         return CustomPrincipal.of(
                 username,
                 password,
+                roleType,
                 email,
                 name,
                 Map.of()
@@ -38,19 +39,15 @@ public record CustomPrincipal(
     public static CustomPrincipal of(
             String username,
             String password,
+            RoleType roleType,
             String email,
             String name,
             Map<String, Object> oAuth2Attributes
     ){
-        Set<RoleType> roleTypes = Set.of(RoleType.USER);
-
         return new CustomPrincipal(
                 username,
                 password,
-                roleTypes.stream()
-                        .map(RoleType::getName)
-                        .map(SimpleGrantedAuthority::new)
-                        .collect(Collectors.toUnmodifiableSet()),
+                roleType,
                 email,
                 name,
                 oAuth2Attributes
@@ -61,6 +58,7 @@ public record CustomPrincipal(
         return CustomPrincipal.of(
                 dto.userId(),
                 dto.password(),
+                dto.roleType(),
                 dto.email(),
                 dto.name()
         );
@@ -71,7 +69,8 @@ public record CustomPrincipal(
                 username,
                 email,
                 password,
-                name
+                name,
+                roleType
         );
     }
 
@@ -97,7 +96,7 @@ public record CustomPrincipal(
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return authorities;
+        return Set.of(new SimpleGrantedAuthority(roleType.getRoleName()));
     }
 
     @Override
@@ -120,14 +119,4 @@ public record CustomPrincipal(
         return name;
     }
 
-    @Getter
-    public enum RoleType{
-        USER("ROLE_USER");
-
-        private final String name;
-
-        RoleType(String name){
-            this.name = name;
-        }
-    }
 }
