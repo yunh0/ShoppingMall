@@ -112,4 +112,9 @@ public class MemberController {
 
         return "redirect:/myPage";
     }
+
+    @GetMapping("/seller/sellerPage")
+    public String showSellerPage(){
+        return "/sellerPage";
+    }
 }

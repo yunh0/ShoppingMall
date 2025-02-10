@@ -5,5 +5,6 @@
     <attr sel="#signup" sec:authorize="!isAuthenticated()" th:href="@{/signup}" />
     <attr sel="#login" sec:authorize="!isAuthenticated()" th:href="@{/signin}" />
     <attr sel="#myPage" sec:authorize="isAuthenticated()" th:href="@{/myPage}" />
+    <attr sel="#sellerPage" sec:authorize="hasRole('SELLER')" th:href="@{/seller/sellerPage}" />
     <attr sel="#logout" sec:authorize="isAuthenticated()" th:href="@{/logout}" />
 </thlogic>

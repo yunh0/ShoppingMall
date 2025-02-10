@@ -38,7 +38,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
                         .requestMatchers("/", "/index", "/signin", "/signup").permitAll()
-                        .requestMatchers("/seller/**").hasAuthority(RoleType.USER.getRoleName())
+                        .requestMatchers("/seller/**").hasAuthority(RoleType.SELLER.getRoleName())
                         .anyRequest().authenticated()
                 )
                 .formLogin(
