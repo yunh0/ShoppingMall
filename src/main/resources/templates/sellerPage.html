@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -16,16 +16,89 @@
     <hr>
 </header>
 
-<h3>판매자 관리 페이지입니다.</h3>
+<main class="container" th:object="${products}">
+    <h3 class="my-4">판매중인 상품</h3>
 
-<form action="/seller/sellerPage/product/save" method="get">
-    <button type="submit" class="btn btn-primary">상품 추가하기</button>
-</form>
+    <div class="row">
+        <table class="table" id="product-table">
+            <thead>
+            <tr>
+                <th class="title col-6">
+                    <a th:text="'상품명'"
+                       th:href="@{/seller/sellerPage/product(page=${products.number}, sort='productName' + (*{sort.getOrderFor('productName')} != null ? (*{sort.getOrderFor('productName').direction.name} != 'DESC' ? ',desc' : '') : '') )}">
+                    </a>
+                </th>
+                <th class="price col-2">
+                    <a th:text="'가격'"
+                       th:href="@{/seller/sellerPage/product(page=${products.number}, sort='price' + (*{sort.getOrderFor('price')} != null ? (*{sort.getOrderFor('price').direction.name} != 'DESC' ? ',desc' : '') : '') )}">
+                    </a>
+                </th>
+                <th class="count col-2">
+                    <a th:text="'재고'"
+                       th:href="@{/seller/sellerPage/product(page=${products.number}, sort='count' + (*{sort.getOrderFor('count')} != null ? (*{sort.getOrderFor('count').direction.name} != 'DESC' ? ',desc' : '') : '') )}">
+                    </a>
+                </th>
+                <th class="created-at col-2">
+                    <a th:text="'등록일'"
+                       th:href="@{/seller/sellerPage/product(page=${products.number}, sort='createdAt' + (*{sort.getOrderFor('createdAt')} != null ? (*{sort.getOrderFor('createdAt').direction.name} != 'DESC' ? ',desc' : '') : '') )}">
+                    </a>
+                </th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="product : ${products}">
+                <td class="title">
+                    <a th:text="${product.productName}" th:href="@{/seller/sellerPage/product/{id}(id=${product.productId})}"></a>
+                </td>
+                <td class="price" th:text="${#numbers.formatInteger(product.price, 3, 'COMMA') + '원'}"></td>
+                <td class="count" th:text="${product.count}"></td>
+                <td class="created-at">
+                    <time th:datetime="${product.createdAt}" th:text="${#temporals.format(product.createdAt, 'yyyy-MM-dd')}"></time>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="row">
+        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+            <a class="btn btn-primary me-md-2" role="button" href="/seller/sellerPage/product/save" th:href="@{/seller/sellerPage/product/save}">상품 추가하기</a>
+        </div>
+    </div>
+
+    <div class="row">
+        <nav id="pagination" aria-label="Page navigation">
+            <ul class="pagination justify-content-center">
+                <li class="page-item">
+                    <a class="page-link"
+                       th:text="'이전'"
+                       th:href="@{/seller/sellerPage/product(page=${products.number - 1}, sort=${param.sort}, direction=${param.direction})}"
+                       th:classappend="${products.number <= 0 ? 'disabled' : ''}">
+                    </a>
+                </li>
+                <li class="page-item" th:each="pageNumber : ${paginationBarNumbers}">
+                    <a class="page-link"
+                       th:text="${pageNumber + 1}"
+                       th:href="@{/seller/sellerPage/product(page=${pageNumber}, sort=${param.sort}, direction=${param.direction})}"
+                       th:classappend="${pageNumber == products.number ? 'active' : ''}"></a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link"
+                       th:text="'다음'"
+                       th:href="@{/seller/sellerPage/product(page=${products.number + 1}, sort=${param.sort}, direction=${param.direction})}"
+                       th:classappend="${products.number >= products.totalPages - 1 ? 'disabled' : ''}">
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</main>
 
 <footer id="footer">
     <hr>
     푸터 삽입부
 </footer>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2" crossorigin="anonymous"></script>
 </body>
 </html>
