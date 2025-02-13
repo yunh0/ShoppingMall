@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="yunho">
+    <title>상품 등록 페이지</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+
+<body>
+<header id="header">
+    헤더 삽입부
+    <hr>
+</header>
+
+<div class="container">
+    <h2 class="mt-4">상품 등록</h2>
+    <br><br>
+
+    <div class="card p-4">
+        <form action="/seller/sellerPage/product/save" method="post" id="productForm" th:object="${productRequest}">
+            <div class="mb-3">
+                <label for="productName" class="form-label">상품명</label>
+                <input type="text" class="form-control" id="productName" name="productName" th:value="*{productName}">
+                <div th:if="${#fields.hasErrors('productName')}" class="text-danger">
+                    <span th:errors="*{productName}"></span>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label for="price" class="form-label">가격</label>
+                <input type="number" class="form-control" id="price" name="price" th:value="*{price}">
+                <div th:if="${#fields.hasErrors('price')}" class="text-danger">
+                    <span th:errors="*{price}"></span>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label for="info" class="form-label">상품 설명</label>
+                <textarea class="form-control" id="info" name="info" rows="3" th:text="*{info}"></textarea>
+                <div th:if="${#fields.hasErrors('info')}" class="text-danger">
+                    <span th:errors="*{info}"></span>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label for="count" class="form-label">상품 수량</label>
+                <input type="number" class="form-control" id="count" name="count" th:value="*{count}">
+                <div th:if="${#fields.hasErrors('count')}" class="text-danger">
+                    <span th:errors="*{count}"></span>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label for="category" class="form-label">카테고리</label>
+                <select class="form-select" id="category">
+                    <option value="" disabled selected>카테고리를 선택하세요</option>
+                    <th:block th:each="category : ${categoryList}">
+                        <option th:value="${category.categoryId}" th:text="${category.name}"></option>
+                    </th:block>
+                </select>
+                <div th:if="${#fields.hasErrors('categoryId')}" class="text-danger">
+                    <span th:errors="*{categoryId}"></span>
+                </div>
+            </div>
+
+            <div class="mb-3" id="subCategoryContainer1" style="display: none;">
+                <label for="subCategory1" class="form-label">하위 카테고리</label>
+                <select class="form-select" id="subCategory1">
+                    <option value="" disabled selected>하위 카테고리를 선택하세요</option>
+                </select>
+                <div th:if="${#fields.hasErrors('categoryId')}" class="text-danger">
+                    <span th:errors="*{categoryId}"></span>
+                </div>
+            </div>
+
+            <div class="mb-3" id="subCategoryContainer2" style="display: none;">
+                <label for="subCategory2" class="form-label">하위 카테고리</label>
+                <select class="form-select" id="subCategory2">
+                    <option value="" disabled selected>하위 카테고리를 선택하세요</option>
+                </select>
+                <div th:if="${#fields.hasErrors('categoryId')}" class="text-danger">
+                    <span th:errors="*{categoryId}"></span>
+                </div>
+            </div>
+
+            <input type="hidden" id="finalCategoryId" name="categoryId" th:value="*{categoryId}">
+
+            <button type="submit" class="btn btn-primary">상품 등록</button>
+        </form>
+    </div>
+</div>
+
+<footer id="footer">
+    <hr>
+    푸터 삽입부
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2" crossorigin="anonymous"></script>
+
+<script th:inline="javascript">
+    $(document).ready(function() {
+        function updateFinalCategoryId() {
+            let finalCategoryId = null;
+
+            if ($('#subCategoryContainer2').is(':visible') && !$('#subCategory2').val()) {
+                finalCategoryId = null;
+            } else if ($('#subCategory2').val()) {
+                finalCategoryId = $('#subCategory2').val();
+            } else if ($('#subCategoryContainer1').is(':visible') && !$('#subCategory1').val()) {
+                finalCategoryId = null;
+            } else if ($('#subCategory1').val()) {
+                finalCategoryId = $('#subCategory1').val();
+            } else if ($('#category').val()) {
+                finalCategoryId = $('#category').val();
+            }
+
+            $('#finalCategoryId').val(finalCategoryId);
+        }
+
+        $('#category').change(function() {
+            const parentId = $(this).val();
+            $('#subCategoryContainer1, #subCategoryContainer2').hide();
+            $('#subCategory1, #subCategory2').val('');
+            updateFinalCategoryId();
+
+            if (parentId) {
+                $.ajax({
+                    url: '/seller/sellerPage/product/categories/' + parentId,
+                    method: 'GET',
+                    success: function(subCategories) {
+                        $('#subCategory1').empty().append('<option value="" disabled selected>하위 카테고리를 선택하세요</option>');
+
+                        if (subCategories.length > 0) {
+                            $('#subCategoryContainer1').show();
+                            subCategories.forEach(function(category) {
+                                $('#subCategory1').append(
+                                    $('<option>', { value: category.categoryId, text: category.name })
+                                );
+                            });
+                        }
+                        updateFinalCategoryId();
+                    }
+                });
+            }
+        });
+
+        $('#subCategory1').change(function() {
+            const parentId = $(this).val();
+            $('#subCategoryContainer2').hide();
+            $('#subCategory2').val('');
+            updateFinalCategoryId();
+
+            if (parentId) {
+                $.ajax({
+                    url: '/seller/sellerPage/product/categories/' + parentId,
+                    method: 'GET',
+                    success: function(subCategories) {
+                        $('#subCategory2').empty().append('<option value="" disabled selected>하위 카테고리를 선택하세요</option>');
+
+                        if (subCategories.length > 0) {
+                            $('#subCategoryContainer2').show();
+                            subCategories.forEach(function(category) {
+                                $('#subCategory2').append(
+                                    $('<option>', { value: category.categoryId, text: category.name })
+                                );
+                            });
+                        }
+                        updateFinalCategoryId();
+                    }
+                });
+            }
+        });
+
+        $('#subCategory2').change(function() {
+            updateFinalCategoryId();
+        });
+
+        $('#productForm').submit(function(event) {
+            updateFinalCategoryId();
+        });
+    });
+</script>
+
+</body>
+</html>

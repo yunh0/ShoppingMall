@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.util.List;
 import java.util.Objects;
 
 @Getter
@@ -38,6 +39,9 @@ public class Member extends AuditingFields {
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "profile_id", unique = true)
     private Profile profile;
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
+    public List<Product> products;
 
     public Member(String userId, String email, String password, String name, Profile profile, String createdBy) {
         this.userId = userId;

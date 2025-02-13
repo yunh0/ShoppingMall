@@ -51,7 +51,7 @@ public record ProfileDto(
     }
 
     public static ProfileDto from(Profile profile){
-        return new ProfileDto(
+        return ProfileDto.of(
                 profile.getProfileId(),
                 profile.getPhoneNumber(),
                 profile.getAge(),

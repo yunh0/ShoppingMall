@@ -56,7 +56,7 @@ public record MemberDto(
     }
 
     public static MemberDto from(Member member){
-        return new MemberDto(
+        return MemberDto.of(
                 member.getUserId(),
                 member.getEmail(),
                 member.getPassword(),

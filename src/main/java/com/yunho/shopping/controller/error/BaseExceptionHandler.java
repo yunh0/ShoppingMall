@@ -8,6 +8,9 @@ import org.springframework.http.MediaType;
 
 import java.util.Map;
 
+// error.html으로 Spring Boot가 자동으로 렌더링하므로 이 클래스는 현재 필요없음
+// 추가적인 특정 예외 처리가 필요할 때 다시 사용할 예정
+@Deprecated
 @ControllerAdvice
 public class BaseExceptionHandler {
 

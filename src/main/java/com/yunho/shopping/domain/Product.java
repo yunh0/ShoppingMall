@@ -31,31 +31,32 @@ public class Product extends AuditingFields {
     @Column(nullable = false)
     private Integer count;
 
-    @Column(nullable = false)
-    private String seller;
-
     @ManyToOne
     @JoinColumn(name = "category_id")
     private Category category;
 
-    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
-    List<ProductImg> images;
+    @ManyToOne
+    @JoinColumn(name = "seller_id")
+    private Member member;
 
-    private Product(String productName, Integer price, String info, Integer count, String seller, Category category){
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    public List<ProductImg> images;
+
+    private Product(String productName, Integer price, String info, Integer count, Category category, Member member){
         this.productName = productName;
         this.price = price;
         this.info = info;
         this.count = count;
-        this.seller = seller;
         this.category = category;
+        this.member = member;
     }
 
     protected Product(){
 
     }
 
-    public Product of(String productName, Integer price, String info, Integer count, String seller, Category category){
-        return new Product(productName, price, info, count, seller, category);
+    public static Product of(String productName, Integer price, String info, Integer count, Category category, Member member){
+        return new Product(productName, price, info, count, category, member);
     }
 
     @Override
