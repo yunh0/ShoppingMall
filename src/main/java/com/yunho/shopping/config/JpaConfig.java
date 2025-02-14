@@ -20,8 +20,10 @@ public class JpaConfig {
         return () -> Optional.ofNullable(SecurityContextHolder.getContext())
                 .map(SecurityContext::getAuthentication)
                 .filter(Authentication::isAuthenticated)
-                .map(Authentication::getPrincipal)
+                .map(Authentication::getPrinct adipal)
+                .filter(CustomPrincipal.class::isInstance)
                 .map(CustomPrincipal.class::cast)
-                .map(CustomPrincipal::getName);
+                .map(CustomPrincipal::getName)
+                .or(() -> Optional.of("system"));
     }
 }
