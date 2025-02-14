@@ -20,7 +20,7 @@ public class JpaConfig {
         return () -> Optional.ofNullable(SecurityContextHolder.getContext())
                 .map(SecurityContext::getAuthentication)
                 .filter(Authentication::isAuthenticated)
-                .map(Authentication::getPrinct adipal)
+                .map(Authentication::getPrincipal)
                 .filter(CustomPrincipal.class::isInstance)
                 .map(CustomPrincipal.class::cast)
                 .map(CustomPrincipal::getName)
