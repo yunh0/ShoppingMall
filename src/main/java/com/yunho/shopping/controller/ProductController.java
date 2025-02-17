@@ -13,6 +13,7 @@ import com.yunho.shopping.service.ProductService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -23,9 +24,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
+@Slf4j
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/seller/sellerPage/product")
@@ -71,6 +74,7 @@ public class ProductController {
     @PostMapping("/save")
     public String saveProduct(
             @AuthenticationPrincipal CustomPrincipal principal,
+            @RequestParam("images") List<MultipartFile> images,
             @ModelAttribute("productRequest") @Valid ProductRequest productRequest,
             BindingResult bindingResult,
             Model model
@@ -89,7 +93,7 @@ public class ProductController {
 
         ProductDto productDto = productRequest.toDto(memberDto, category);
 
-        productService.saveProduct(productDto);
+        productService.saveProduct(productDto, images);
 
         return "redirect:/seller/sellerPage/product";
     }

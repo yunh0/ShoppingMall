@@ -38,3 +38,6 @@ out/
 
 #### .env ###
 .env
+
+### image files ###
+/src/main/resources/static/uploads/**

@@ -22,7 +22,7 @@
     <br><br>
 
     <div class="card p-4">
-        <form action="/seller/sellerPage/product/save" method="post" id="productForm" th:object="${productRequest}">
+        <form action="/seller/sellerPage/product/save" method="post" id="productForm" th:object="${productRequest}" enctype="multipart/form-data">
             <div class="mb-3">
                 <label for="productName" class="form-label">상품명</label>
                 <input type="text" class="form-control" id="productName" name="productName" th:value="*{productName}">
@@ -53,6 +53,13 @@
                 <div th:if="${#fields.hasErrors('count')}" class="text-danger">
                     <span th:errors="*{count}"></span>
                 </div>
+            </div>
+
+            <div class="mb-3">
+                <label for="images" class="form-label">상품 이미지 (최대 3개)</label>
+                <input type="file" class="form-control" id="images" name="images" multiple accept="image/*">
+                <div id="maxImageError" class="text-danger" style="display: none;">최대 3개의 이미지만 업로드 가능합니다.</div>
+                <div id="minImageError" class="text-danger" style="display: none;">최소 1개의 이미지는 업로드 해야합니다.</div>
             </div>
 
             <div class="mb-3">
@@ -103,6 +110,34 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2" crossorigin="anonymous"></script>
 
 <script th:inline="javascript">
+    document.getElementById("images").addEventListener("change", function(event) {
+        const files = event.target.files;
+        const maxImageError = document.getElementById("maxImageError");
+        const minImageError = document.getElementById("minImageError");
+
+        if (files.length > 3) {
+            maxImageError.style.display = "block";
+            minImageError.style.display = "none";
+            event.target.value = "";
+        } else if (files.length === 0) {
+            maxImageError.style.display = "none";
+            minImageError.style.display = "block";
+        } else {
+            maxImageError.style.display = "none";
+            minImageError.style.display = "none";
+        }
+    });
+
+    document.getElementById("productForm").addEventListener("submit", function(event) {
+        const images = document.getElementById("images").files;
+        const minImageError = document.getElementById("minImageError");
+
+        if (images.length === 0) {
+            minImageError.style.display = "block";
+            event.preventDefault();
+        }
+    });
+
     $(document).ready(function() {
         function updateFinalCategoryId() {
             let finalCategoryId = null;
