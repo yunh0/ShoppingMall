@@ -23,7 +23,7 @@
         <table class="table" id="product-table">
             <thead>
             <tr>
-                <th class="title col-6">
+                <th class="title col-3">
                     <a th:text="'상품명'"
                        th:href="@{/seller/sellerPage/product(page=${products.number}, sort='productName' + (*{sort.getOrderFor('productName')} != null ? (*{sort.getOrderFor('productName').direction.name} != 'DESC' ? ',desc' : '') : '') )}">
                     </a>
@@ -33,9 +33,14 @@
                        th:href="@{/seller/sellerPage/product(page=${products.number}, sort='price' + (*{sort.getOrderFor('price')} != null ? (*{sort.getOrderFor('price').direction.name} != 'DESC' ? ',desc' : '') : '') )}">
                     </a>
                 </th>
-                <th class="count col-2">
+                <th class="count col-1">
                     <a th:text="'재고'"
                        th:href="@{/seller/sellerPage/product(page=${products.number}, sort='count' + (*{sort.getOrderFor('count')} != null ? (*{sort.getOrderFor('count').direction.name} != 'DESC' ? ',desc' : '') : '') )}">
+                    </a>
+                </th>
+                <th class="category col-3">
+                    <a th:text="'카테고리'"
+                       th:href="@{/seller/sellerPage/product(page=${products.number}, sort='category.categoryId' + (*{sort.getOrderFor('category.categoryId')} != null ? (*{sort.getOrderFor('category.categoryId').direction.name} != 'DESC' ? ',desc' : '') : '') )}">
                     </a>
                 </th>
                 <th class="created-at col-2">
@@ -52,6 +57,7 @@
                 </td>
                 <td class="price" th:text="${#numbers.formatInteger(product.price, 3, 'COMMA') + '원'}"></td>
                 <td class="count" th:text="${product.count}"></td>
+                <td class="count" th:text="${product.categoryHierarchy()}"></td>
                 <td class="created-at">
                     <time th:datetime="${product.createdAt}" th:text="${#temporals.format(product.createdAt, 'yyyy-MM-dd')}"></time>
                 </td>
