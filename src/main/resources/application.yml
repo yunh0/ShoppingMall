@@ -8,6 +8,9 @@ logging:
     org.hibernate.type.descriptor.sql.BasicBinder: trace
 
 spring:
+  web:
+    resources:
+      static-locations: classpath:/static/,classpath:/uploads/
   servlet:
     multipart:
       enabled: true

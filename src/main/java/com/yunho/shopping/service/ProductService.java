@@ -25,6 +25,13 @@ public class ProductService {
     private final ProductImgService productImgService;
 
     @Transactional(readOnly = true)
+    public ProductDto findByProductId(Long productId){
+        return ProductDto.from(
+                productRepository.getReferenceById(productId)
+        );
+    }
+
+    @Transactional(readOnly = true)
     public Page<ProductDto> searchProducts(String userId, Pageable pageable){
         return productRepository.findByMember_UserIdContaining(userId, pageable)
                 .map(ProductDto::from);

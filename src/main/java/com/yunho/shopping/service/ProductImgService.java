@@ -24,7 +24,7 @@ public class ProductImgService {
 
     public void uploadImg(Product product, List<MultipartFile> images){
         try{
-            String uploadDir = "src/main/resources/static/uploads/image/";
+            String uploadDir = "src/main/resources/static/uploads/";
 
             for(MultipartFile image : images){
                 String dbFilePath = saveImage(image, uploadDir);
@@ -40,12 +40,16 @@ public class ProductImgService {
     private String saveImage(MultipartFile image, String uploadDir) throws IOException {
         String fileName = UUID.randomUUID().toString().replace("-", "") + "_" + image.getOriginalFilename();
         String filePath = uploadDir + fileName;
-        String dbFilePath = "/uploads/image/" + fileName;
+        String dbFilePath = "/uploads/" + fileName;
 
         Path path = Paths.get(filePath);
         Files.createDirectories(path.getParent());
         Files.write(path, image.getBytes());
 
         return dbFilePath;
+    }
+
+    public List<ProductImg> getProductImages(Long productId){
+        return productImgRepository.findByProduct_ProductId(productId);
     }
 }

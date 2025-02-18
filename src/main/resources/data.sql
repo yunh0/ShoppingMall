@@ -104,3 +104,8 @@ VALUES
     ('바지 1', 49000, '시원한 여름 반바지', 35, 19, @seller_id, NOW(), NOW(), 'yunho', 'yunho'),
     ('운동화 1', 89000, '트렌디한 운동화', 25, 26, @seller_id, NOW(), NOW(), 'yunho', 'yunho'),
     ('구두 1', 149000, '우아한 여성 구두', 20, 30, @seller_id, NOW(), NOW(), 'yunho', 'yunho');
+
+INSERT INTO product_img (product_id, path, created_at, modified_at, created_by, modified_by)
+VALUES
+    (1, "/uploads/86afec583afb4429928c9a3ede013719_KakaoTalk_20240218_232017188.png", NOW(), NOW(), 'yunho', 'yunho'),
+    (1, "/uploads/4e1e2bce04bb4712926dd1efee7718ec_yunho.jpg", NOW(), NOW(), 'yunho', 'yunho');

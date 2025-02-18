@@ -1,15 +1,14 @@
 package com.yunho.shopping.controller;
 
 import com.yunho.shopping.domain.Category;
+import com.yunho.shopping.domain.ProductImg;
 import com.yunho.shopping.dto.CustomPrincipal;
 import com.yunho.shopping.dto.MemberDto;
 import com.yunho.shopping.dto.ProductDto;
 import com.yunho.shopping.dto.request.ProductRequest;
+import com.yunho.shopping.dto.response.ProductResponse;
 import com.yunho.shopping.dto.response.ProductWithSellerResponse;
-import com.yunho.shopping.service.CategoryService;
-import com.yunho.shopping.service.MemberService;
-import com.yunho.shopping.service.PaginationService;
-import com.yunho.shopping.service.ProductService;
+import com.yunho.shopping.service.*;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -31,15 +30,26 @@ import java.util.List;
 @Slf4j
 @Controller
 @RequiredArgsConstructor
-@RequestMapping("/seller/sellerPage/product")
 public class ProductController {
 
     private final ProductService productService;
     private final CategoryService categoryService;
     private final MemberService memberService;
     private final PaginationService paginationService;
+    private final ProductImgService productImgService;
 
-    @GetMapping
+    @GetMapping("/product/{productId}")
+    public String showProductDetail(@PathVariable Long productId, Model model){
+        List<ProductImg> images = productImgService.getProductImages(productId);
+        ProductDto productDto = productService.findByProductId(productId);
+        ProductResponse productResponse = ProductResponse.from(productDto, images);
+
+        model.addAttribute("productResponse", productResponse);
+
+        return "/productDetail";
+    }
+
+    @GetMapping("/seller/sellerPage/product")
     public String showSellerPage(
             @AuthenticationPrincipal CustomPrincipal principal,
             @PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable,
@@ -54,7 +64,7 @@ public class ProductController {
         return "/sellerPage";
     }
 
-    @GetMapping("/save")
+    @GetMapping("/seller/sellerPage/product/save")
     public String saveProductView(Model model){
         List<Category> categoryList = categoryService.getCategoriesByDepth(1);
         model.addAttribute("categoryList", categoryList);
@@ -63,7 +73,7 @@ public class ProductController {
         return "/saveProduct";
     }
 
-    @GetMapping("/categories/{parentId}")
+    @GetMapping("/seller/sellerPage/product/categories/{parentId}")
     @ResponseBody
     public ResponseEntity<List<Category>> getSubCategories(@PathVariable Long parentId){
         List<Category> subCategories = categoryService.getSubCategories(parentId);
@@ -71,7 +81,7 @@ public class ProductController {
         return ResponseEntity.ok(subCategories);
     }
 
-    @PostMapping("/save")
+    @PostMapping("/seller/sellerPage/product/save")
     public String saveProduct(
             @AuthenticationPrincipal CustomPrincipal principal,
             @RequestParam("images") List<MultipartFile> images,

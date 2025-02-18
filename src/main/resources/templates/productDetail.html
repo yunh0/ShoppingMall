@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="상품 상세 페이지">
+    <meta name="author" content="yunho">
+    <title>상품 상세 페이지</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body>
+<header id="header">
+    헤더 삽입부
+    <hr>
+</header>
+
+<main class="container mt-4">
+    <div class="row">
+        <!-- 상품 이미지 슬라이더 -->
+        <div class="col-md-6">
+            <div id="productImageCarousel" class="carousel slide" data-bs-ride="carousel">
+                <div class="carousel-inner">
+                    <!-- Thymeleaf를 이용한 이미지 반복 출력 -->
+                    <th:block th:each="image, iterStat : ${productResponse.images}">
+                        <div class="carousel-item" th:classappend="${iterStat.first} ? 'active'">
+                            <img th:src="@{${image.path}}" class="d-block w-100" alt="상품 이미지">
+                        </div>
+                    </th:block>
+                </div>
+                <button class="carousel-control-prev" type="button" data-bs-target="#productImageCarousel" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Previous</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#productImageCarousel" data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Next</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- 상품 정보 -->
+        <div class="col-md-6">
+            <h2 th:text="${productResponse.productName}">상품명</h2>
+            <p class="text-muted" th:text="'카테고리: ' + ${productResponse.categoryHierarchy()}">카테고리</p>
+            <h3 class="text-primary" th:text="${#numbers.formatInteger(productResponse.price, 3, 'COMMA')} + '원'">가격</h3>
+            <p class="text-secondary" th:text="'재고: ' + ${productResponse.count} + '개 남음'">재고</p>
+            <p th:text="${productResponse.info}">상품 설명</p>
+
+            <button class="btn btn-success mt-3">구매하기</button>
+        </div>
+    </div>
+</main>
+
+<footer id="footer">
+    <hr>
+    푸터 삽입부
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
