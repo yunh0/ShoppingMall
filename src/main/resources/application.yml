@@ -8,9 +8,13 @@ logging:
     org.hibernate.type.descriptor.sql.BasicBinder: trace
 
 spring:
-  web:
-    resources:
-      static-locations: classpath:/static/,classpath:/uploads/
+  cloud:
+    gcp:
+      storage:
+        credentials:
+          location: ${CLOUD_LOCATION}
+        project-id: ${PROJECT_ID}
+        bucket: ${BUCKET}
   servlet:
     multipart:
       enabled: true

@@ -1,17 +1,17 @@
 package com.yunho.shopping.service;
 
+import com.google.cloud.storage.BlobInfo;
+import com.google.cloud.storage.Storage;
 import com.yunho.shopping.domain.Product;
 import com.yunho.shopping.domain.ProductImg;
 import com.yunho.shopping.repository.ProductImgRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
 import java.util.UUID;
 
@@ -21,13 +21,15 @@ import java.util.UUID;
 public class ProductImgService {
 
     private final ProductImgRepository productImgRepository;
+    private final Storage storage;
+
+    @Value("${spring.cloud.gcp.storage.bucket}")
+    private String bucketName;
 
     public void uploadImg(Product product, List<MultipartFile> images){
         try{
-            String uploadDir = "src/main/resources/static/uploads/";
-
             for(MultipartFile image : images){
-                String dbFilePath = saveImage(image, uploadDir);
+                String dbFilePath = saveImage(image);
 
                 ProductImg productImg = ProductImg.of(dbFilePath, product);
                 productImgRepository.save(productImg);
@@ -37,16 +39,17 @@ public class ProductImgService {
         }
     }
 
-    private String saveImage(MultipartFile image, String uploadDir) throws IOException {
-        String fileName = UUID.randomUUID().toString().replace("-", "") + "_" + image.getOriginalFilename();
-        String filePath = uploadDir + fileName;
-        String dbFilePath = "/uploads/" + fileName;
+    private String saveImage(MultipartFile image) throws IOException {
+        String uuid = UUID.randomUUID().toString();
+        String ext = image.getContentType();
 
-        Path path = Paths.get(filePath);
-        Files.createDirectories(path.getParent());
-        Files.write(path, image.getBytes());
+        BlobInfo blobInfo = BlobInfo.newBuilder(bucketName, uuid)
+                .setContentType(ext)
+                .build();
 
-        return dbFilePath;
+        storage.create(blobInfo, image.getBytes());
+
+        return uuid;
     }
 
     public List<ProductImg> getProductImages(Long productId){

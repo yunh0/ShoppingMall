@@ -39,5 +39,5 @@ out/
 #### .env ###
 .env
 
-### image files ###
-/src/main/resources/static/uploads/**
+### cloud.json ###
+/src/main/resources/cloud.json
