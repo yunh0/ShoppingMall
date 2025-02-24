@@ -1,7 +1,6 @@
 package com.yunho.shopping.dto.response;
 
 import com.yunho.shopping.domain.Category;
-import com.yunho.shopping.domain.ProductImg;
 import com.yunho.shopping.dto.ProductDto;
 
 import java.time.LocalDateTime;
@@ -17,7 +16,7 @@ public record ProductResponse(
         Integer count,
         Category category,
         LocalDateTime createdAt,
-        List<ProductImg> images
+        List<String> imagesPath
 ) {
     public static ProductResponse of(
             Long productId,
@@ -27,7 +26,7 @@ public record ProductResponse(
             Integer count,
             Category category,
             LocalDateTime createdAt,
-            List<ProductImg> images
+            List<String> imagesPath
     ){
         return new ProductResponse(
                 productId,
@@ -37,11 +36,11 @@ public record ProductResponse(
                 count,
                 category,
                 createdAt,
-                images
+                imagesPath
         );
     }
 
-    public static ProductResponse from(ProductDto dto, List<ProductImg> images){
+    public static ProductResponse from(ProductDto dto, List<String> imagesPath){
         return ProductResponse.of(
                 dto.productId(),
                 dto.productName(),
@@ -50,7 +49,7 @@ public record ProductResponse(
                 dto.count(),
                 dto.category(),
                 dto.createdAt(),
-                images
+                imagesPath
         );
     }
 

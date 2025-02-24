@@ -14,6 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -54,5 +55,14 @@ public class ProductImgService {
 
     public List<ProductImg> getProductImages(Long productId){
         return productImgRepository.findByProduct_ProductId(productId);
+    }
+
+    public List<String> getProductImagesPath(List<ProductImg> images){
+        return images.stream()
+                .map(productImg -> "https://storage.googleapis.com/" +
+                        bucketName + "/" +
+                        productImg.getPath()
+                )
+                .collect(Collectors.toList());
     }
 }

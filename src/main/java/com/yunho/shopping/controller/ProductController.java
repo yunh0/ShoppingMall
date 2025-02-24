@@ -41,8 +41,9 @@ public class ProductController {
     @GetMapping("/product/{productId}")
     public String showProductDetail(@PathVariable Long productId, Model model){
         List<ProductImg> images = productImgService.getProductImages(productId);
+        List<String> imagesPath = productImgService.getProductImagesPath(images);
         ProductDto productDto = productService.findByProductId(productId);
-        ProductResponse productResponse = ProductResponse.from(productDto, images);
+        ProductResponse productResponse = ProductResponse.from(productDto, imagesPath);
 
         model.addAttribute("productResponse", productResponse);
 

@@ -23,9 +23,9 @@
             <div id="productImageCarousel" class="carousel slide" data-bs-ride="carousel">
                 <div class="carousel-inner">
                     <!-- Thymeleaf를 이용한 이미지 반복 출력 -->
-                    <th:block th:each="image, iterStat : ${productResponse.images}">
+                    <th:block th:each="image, iterStat : ${productResponse.imagesPath}">
                         <div class="carousel-item" th:classappend="${iterStat.first} ? 'active'">
-                            <img th:src="@{${image.path}}" class="d-block w-100" alt="상품 이미지">
+                            <img th:src="@{${image}}" class="d-block w-100" alt="상품 이미지">
                         </div>
                     </th:block>
                 </div>
