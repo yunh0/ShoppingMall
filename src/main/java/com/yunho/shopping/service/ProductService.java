@@ -1,10 +1,12 @@
 package com.yunho.shopping.service;
 
+import com.yunho.shopping.domain.Category;
 import com.yunho.shopping.domain.Member;
 import com.yunho.shopping.domain.Product;
 import com.yunho.shopping.dto.ProductDto;
+import com.yunho.shopping.dto.response.ProductResponse;
+import com.yunho.shopping.repository.CategoryRepository;
 import com.yunho.shopping.repository.MemberRepository;
-import com.yunho.shopping.repository.ProductImgRepository;
 import com.yunho.shopping.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -14,6 +16,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Transactional
@@ -22,6 +26,7 @@ public class ProductService {
 
     private final ProductRepository productRepository;
     private final MemberRepository memberRepository;
+    private final CategoryRepository categoryRepository;
     private final ProductImgService productImgService;
 
     @Transactional(readOnly = true)
@@ -44,5 +49,17 @@ public class ProductService {
         productRepository.save(product);
 
         productImgService.uploadImg(product, images);
+    }
+
+    public Map<Category, List<ProductResponse>> getProductsByTopCategory(){
+        return categoryRepository.findByDepthIsOne().stream()
+                .collect(Collectors.toMap(
+                        category -> category,
+                        category -> productRepository.findTop6ByTopCategory(category).stream()
+                                .map(product -> ProductResponse.from(ProductDto.from(product), productImgService.getProductImagesPath(
+                                        productImgService.getProductImages(product.getProductId())
+                                )))
+                                .collect(Collectors.toList())
+                ));
     }
 }

@@ -58,6 +58,9 @@ public class ProductImgService {
     }
 
     public List<String> getProductImagesPath(List<ProductImg> images){
+        if(images == null || images.isEmpty()) {
+            return List.of("https://storage.googleapis.com/" + bucketName + "/no-image.jpg");
+        }
         return images.stream()
                 .map(productImg -> "https://storage.googleapis.com/" +
                         bucketName + "/" +
