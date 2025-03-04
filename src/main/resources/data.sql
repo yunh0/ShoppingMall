@@ -150,6 +150,23 @@ VALUES
     ('여성 롱 원피스 1', 93000, '설명39', 8, 37, @seller_id, NOW(), NOW(), 'yunho', 'yunho'),
     ('여성 롱 원피스 2', 95000, '설명40', 6, 37, @seller_id, NOW(), NOW(), 'yunho', 'yunho'),
     ('여성 정장 원피스 1', 97000, '설명41', 4, 38, @seller_id, NOW(), NOW(), 'yunho', 'yunho'),
-    ('여성 정장 원피스 2', 99000, '설명42', 2, 38, @seller_id, NOW(), NOW(), 'yunho', 'yunho');
-
+    ('여성 정장 원피스 2', 99000, '설명42', 2, 38, @seller_id, NOW(), NOW(), 'yunho', 'yunho'),
+    ('여성 정장 원피스 3', 67000, '설명43', 100, 38, @seller_id, NOW(), NOW(), 'yunho', 'yunho'),
+    ('여성 정장 원피스 4', 74000, '설명44', 55, 38, @seller_id, NOW(), NOW(), 'yunho', 'yunho'),
+    ('여성 정장 원피스 5', 56000, '설명45', 50, 38, @seller_id, NOW(), NOW(), 'yunho', 'yunho'),
+    ('여성 정장 원피스 6', 99000, '설명46', 90, 38, @seller_id, NOW(), NOW(), 'yunho', 'yunho'),
+    ('여성 정장 원피스 7', 45000, '설명47', 200, 38, @seller_id, NOW(), NOW(), 'yunho', 'yunho'),
+    ('여성 정장 원피스 8', 55000, '설명48', 103, 38, @seller_id, NOW(), NOW(), 'yunho', 'yunho'),
+    ('여성 정장 원피스 9', 89000, '설명49', 54, 38, @seller_id, NOW(), NOW(), 'yunho', 'yunho'),
+    ('여성 정장 원피스 10', 100000, '설명50', 32, 38, @seller_id, NOW(), NOW(), 'yunho', 'yunho'),
+    ('여성 정장 원피스 11', 140000, '설명51', 66, 38, @seller_id, NOW(), NOW(), 'yunho', 'yunho'),
+    ('여성 정장 원피스 12', 139000, '설명52', 100, 38, @seller_id, NOW(), NOW(), 'yunho', 'yunho'),
+    ('여성 정장 원피스 13', 120000, '설명53', 98, 38, @seller_id, NOW(), NOW(), 'yunho', 'yunho'),
+    ('여성 정장 원피스 14', 43000, '설명54', 91, 38, @seller_id, NOW(), NOW(), 'yunho', 'yunho'),
+    ('여성 정장 원피스 15', 63000, '설명55', 13, 38, @seller_id, NOW(), NOW(), 'yunho', 'yunho'),
+    ('여성 정장 원피스 16', 61000, '설명56', 12, 38, @seller_id, NOW(), NOW(), 'yunho', 'yunho'),
+    ('여성 정장 원피스 17', 91000, '설명57', 18, 38, @seller_id, NOW(), NOW(), 'yunho', 'yunho'),
+    ('여성 정장 원피스 18', 87000, '설명58', 22, 38, @seller_id, NOW(), NOW(), 'yunho', 'yunho'),
+    ('여성 정장 원피스 19', 99900, '설명59', 29, 38, @seller_id, NOW(), NOW(), 'yunho', 'yunho'),
+    ('여성 정장 원피스 20', 75000, '설명60', 2, 38, @seller_id, NOW(), NOW(), 'yunho', 'yunho');
 

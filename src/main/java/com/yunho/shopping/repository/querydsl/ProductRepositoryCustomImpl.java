@@ -6,6 +6,9 @@ import com.yunho.shopping.domain.Product;
 import com.yunho.shopping.domain.QCategory;
 import com.yunho.shopping.domain.QProduct;
 import jakarta.persistence.EntityManager;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import org.springframework.stereotype.Repository;
 

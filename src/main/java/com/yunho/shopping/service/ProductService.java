@@ -62,4 +62,11 @@ public class ProductService {
                                 .collect(Collectors.toList())
                 ));
     }
+
+    public Page<ProductResponse> getProductsByCategory(Long categoryId, Pageable pageable){
+        return productRepository.findByCategory_CategoryId(categoryId, pageable)
+                .map(product -> ProductResponse.from(ProductDto.from(product), productImgService.getProductImagesPath(
+                        productImgService.getProductImages(product.getProductId())
+                )));
+    }
 }

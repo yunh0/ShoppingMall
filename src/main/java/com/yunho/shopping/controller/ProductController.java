@@ -17,7 +17,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -37,6 +36,25 @@ public class ProductController {
     private final MemberService memberService;
     private final PaginationService paginationService;
     private final ProductImgService productImgService;
+
+    @GetMapping("/product/category/{categoryId}")
+    public String showProductWithCategory(
+            @PathVariable Long categoryId,
+            @PageableDefault(size = 12, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable,
+            Model model
+    ){
+        Page<ProductResponse> products = productService.getProductsByCategory(categoryId, pageable);
+        List<Integer> barNumbers = paginationService.getPaginationBarNumbers(pageable.getPageNumber(), products.getTotalPages());
+        String categoryName = categoryService.getCategoryById(categoryId).getName();
+
+        model.addAttribute("products", products);
+        model.addAttribute("paginationBarNumbers", barNumbers);
+        model.addAttribute("selectedCategory", categoryId);
+        model.addAttribute("categoryName", categoryName);
+
+
+        return "/products";
+    }
 
     @GetMapping("/product/{productId}")
     public String showProductDetail(@PathVariable Long productId, Model model){
@@ -72,14 +90,6 @@ public class ProductController {
         model.addAttribute("productRequest", new ProductRequest());
 
         return "/saveProduct";
-    }
-
-    @GetMapping("/seller/sellerPage/product/categories/{parentId}")
-    @ResponseBody
-    public ResponseEntity<List<Category>> getSubCategories(@PathVariable Long parentId){
-        List<Category> subCategories = categoryService.getSubCategories(parentId);
-
-        return ResponseEntity.ok(subCategories);
     }
 
     @PostMapping("/seller/sellerPage/product/save")

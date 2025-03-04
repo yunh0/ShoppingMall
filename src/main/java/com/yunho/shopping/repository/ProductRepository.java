@@ -12,4 +12,5 @@ public interface ProductRepository extends
 {
 
     Page<Product> findByMember_UserIdContaining(String userId, Pageable pageable);
+    Page<Product> findByCategory_CategoryId(Long categoryId, Pageable pageable);
 }

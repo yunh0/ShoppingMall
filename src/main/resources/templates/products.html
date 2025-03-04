@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="상품 목록">
+    <meta name="author" content="yunho">
+    <title>상품 목록</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" th:href="@{/css/header.css}">
+    <style>
+        .product-card {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .product-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+        .product-title {
+            font-size: 16px;
+            font-weight: bold;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+        .mb-4 {
+            font-size: 20px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+<header id="header">
+    헤더 삽입부
+    <hr>
+</header>
+
+<div class="container mt-4">
+    <h2 class="text-center mb-4" th:text="${categoryName}">상품 목록</h2>
+
+    <div class="row row-cols-1 row-cols-md-4 g-4">
+        <div class="col" th:each="product : ${products}">
+            <div class="card product-card">
+                <img th:src="@{${product.imagesPath[0]}}" class="card-img-top product-image" alt="상품 이미지">
+                <div class="card-body text-center">
+                    <h5 class="product-title">
+                        <a th:href="@{/product/{id}(id=${product.productId})}" th:text="${product.productName}" class="text-decoration-none text-dark">
+                            상품명
+                        </a>
+                    </h5>
+                    <p class="card-text text-primary fw-bold" th:text="${#numbers.formatInteger(product.price, 3, 'COMMA')} + '원'">가격</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <nav aria-label="Page navigation" class="mt-4">
+        <ul class="pagination justify-content-center">
+            <li class="page-item">
+                <a class="page-link" th:href="@{/product/category/{categoryId}(categoryId=${selectedCategory}, page=${products.number - 1})}"
+                   th:classappend="${products.first} ? 'disabled' : ''">이전</a>
+            </li>
+            <li class="page-item" th:each="pageNum : ${paginationBarNumbers}">
+                <a class="page-link"
+                   th:href="@{/product/category/{categoryId}(categoryId=${selectedCategory}, page=${pageNum})}"
+                   th:text="${pageNum + 1}"
+                   th:classappend="${products.number == pageNum} ? 'active' : ''">
+                </a>
+            </li>
+            <li class="page-item">
+                <a class="page-link" th:href="@{/product/category/{categoryId}(categoryId=${selectedCategory}, page=${products.number + 1})}"
+                   th:classappend="${products.last} ? 'disabled' : ''">다음</a>
+            </li>
+        </ul>
+    </nav>
+</div>
+
+<footer id="footer">
+    <hr>
+    푸터 삽입부
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js"></script>
+<script th:src="@{/js/header.js}"></script>
+</body>
+</html>
