@@ -29,6 +29,7 @@ public class ProductService {
     private final MemberRepository memberRepository;
     private final CategoryRepository categoryRepository;
     private final ProductImgService productImgService;
+    private final PurchaseHistoryService purchaseHistoryService;
 
     @Transactional(readOnly = true)
     public ProductDto findByProductId(Long productId){
@@ -71,13 +72,15 @@ public class ProductService {
                 )));
     }
 
-    public void buyProduct(Long productId){
+    public void buyProduct(Long productId, String userId, int quantity){
         Product product = productRepository.findWithPessimisticLockById(productId)
                 .orElseThrow(() -> new EntityNotFoundException("상품을 찾을 수 없습니다."));
 
-        if(product.getCount() <= 0){
+        if(product.getCount() < quantity){
             throw new IllegalStateException("재고가 부족합니다.");
         }
-        product.setCount(product.getCount()-1);
+        product.setCount(product.getCount() - quantity);
+
+        purchaseHistoryService.savePurchaseHistory(product, userId, quantity);
     }
 }

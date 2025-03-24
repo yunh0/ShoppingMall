@@ -1,6 +1,7 @@
 package com.yunho.shopping.controller;
 
 import com.yunho.shopping.domain.Category;
+import com.yunho.shopping.domain.Product;
 import com.yunho.shopping.domain.ProductImg;
 import com.yunho.shopping.dto.CustomPrincipal;
 import com.yunho.shopping.dto.MemberDto;
@@ -36,6 +37,7 @@ public class ProductController {
     private final MemberService memberService;
     private final PaginationService paginationService;
     private final ProductImgService productImgService;
+    private final PurchaseHistoryService purchaseHistoryService;
 
     @GetMapping("/product/category/{categoryId}")
     public String showProductWithCategory(
@@ -69,8 +71,12 @@ public class ProductController {
     }
 
     @PostMapping("/product/{productId}/buy")
-    public String buyProduct(@PathVariable Long productId, Model model){
-        productService.buyProduct(productId);
+    public String buyProduct(
+            @PathVariable Long productId,
+            @AuthenticationPrincipal CustomPrincipal principal,
+            @RequestParam("quantity") int quantity
+    ){
+        productService.buyProduct(productId, principal.getUsername(), quantity);
 
         return "redirect:/product/{productId}";
     }
