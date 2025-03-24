@@ -68,6 +68,13 @@ public class ProductController {
         return "/productDetail";
     }
 
+    @PostMapping("/product/{productId}/buy")
+    public String buyProduct(@PathVariable Long productId, Model model){
+        productService.buyProduct(productId);
+
+        return "redirect:/product/{productId}";
+    }
+
     @GetMapping("/seller/sellerPage/product")
     public String showSellerPage(
             @AuthenticationPrincipal CustomPrincipal principal,

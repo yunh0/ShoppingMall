@@ -28,6 +28,7 @@ public class Product extends AuditingFields {
     @Column(nullable = false)
     private String info;
 
+    @Setter
     @Column(nullable = false)
     private Integer count;
 

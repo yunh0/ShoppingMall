@@ -49,7 +49,16 @@
             <p class="text-secondary" th:text="'재고: ' + ${productResponse.count} + '개 남음'">재고</p>
             <p th:text="${productResponse.info}">상품 설명</p>
 
-            <button class="btn btn-success mt-3" sec:authorize="hasRole('USER')">구매하기</button>
+            <form th:action="@{/product/{productId}/buy(productId=${productResponse.productId})}" method="post">
+                <button type="submit"
+                        class="btn btn-success mt-3"
+                        sec:authorize="hasRole('USER')"
+                        th:disabled="${productResponse.count == 0}"
+                        th:text="${productResponse.count == 0} ? '품절' : '구매하기'">
+                    구매하기
+                </button>
+            </form>
+
         </div>
     </div>
 </main>

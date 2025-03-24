@@ -8,6 +8,7 @@ import com.yunho.shopping.dto.response.ProductResponse;
 import com.yunho.shopping.repository.CategoryRepository;
 import com.yunho.shopping.repository.MemberRepository;
 import com.yunho.shopping.repository.ProductRepository;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -68,5 +69,15 @@ public class ProductService {
                 .map(product -> ProductResponse.from(ProductDto.from(product), productImgService.getProductImagesPath(
                         productImgService.getProductImages(product.getProductId())
                 )));
+    }
+
+    public void buyProduct(Long productId){
+        Product product = productRepository.findWithPessimisticLockById(productId)
+                .orElseThrow(() -> new EntityNotFoundException("상품을 찾을 수 없습니다."));
+
+        if(product.getCount() <= 0){
+            throw new IllegalStateException("재고가 부족합니다.");
+        }
+        product.setCount(product.getCount()-1);
     }
 }

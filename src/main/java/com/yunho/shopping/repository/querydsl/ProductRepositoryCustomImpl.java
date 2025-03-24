@@ -6,14 +6,17 @@ import com.yunho.shopping.domain.Product;
 import com.yunho.shopping.domain.QCategory;
 import com.yunho.shopping.domain.QProduct;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.LockModeType;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import org.springframework.stereotype.Repository;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Repository
@@ -51,5 +54,18 @@ public class ProductRepositoryCustomImpl extends QuerydslRepositorySupport imple
             category = category.getParentCategory();
         }
         return category;
+    }
+
+    @Override
+    public Optional<Product> findWithPessimisticLockById(Long productId) {
+        QProduct product = QProduct.product;
+
+        Product result = queryFactory
+                .selectFrom(product)
+                .where(product.productId.eq(productId))
+                .setLockMode(LockModeType.PESSIMISTIC_WRITE)
+                .fetchOne();
+
+        return Optional.ofNullable(result);
     }
 }
