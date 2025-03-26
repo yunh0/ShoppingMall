@@ -6,6 +6,8 @@ import com.yunho.shopping.dto.response.PurchaseHistoryResponse;
 import com.yunho.shopping.repository.MemberRepository;
 import com.yunho.shopping.repository.PurchaseHistoryRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -39,5 +41,14 @@ public class PurchaseHistoryService {
                         )
                 ))
                 .collect(Collectors.toList());
+    }
+
+    public Page<PurchaseHistoryResponse> getPurchaseHistoryWithPaging(String userId, Pageable pageable){
+        return purchaseHistoryRepository.findByMember_UserIdContaining(userId, pageable)
+                .map(purchaseHistory -> PurchaseHistoryResponse.from(purchaseHistory,
+                        productImgService.getProductImagesPath(
+                                productImgService.getProductImages(purchaseHistory.getProduct().getProductId())
+                        )
+                ));
     }
 }

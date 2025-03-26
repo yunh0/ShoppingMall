@@ -56,8 +56,8 @@
     <h4 class="mb-3 mt-2 fw-bold d-flex justify-content-between align-items-center">
         내 정보
         <span id="editButton"
-              class="text-primary"
-              style="cursor: pointer; font-size: 0.9rem; text-decoration: underline;"
+              class="text-secondary fw-normal"
+              style="cursor: pointer; font-size: 0.9rem; text-decoration: none;"
               onclick="enableEdit()">
         수정하기
     </span>
@@ -123,7 +123,15 @@
 
     <br><br>
 
-    <h4 class="mb-3 mt-2 fw-bold">주문 내역</h4>
+    <h4 class="mb-3 mt-2 fw-bold d-flex align-items-center justify-content-between">
+        주문 내역
+        <a href="/myPage/purchaseHistory"
+           class="text-secondary fw-normal"
+           style="font-size: 0.9rem; text-decoration: none;">
+            더보기 &gt;
+        </a>
+    </h4>
+
     <div class="table-responsive">
         <table class="table align-middle text-center">
             <thead class="table-light">
