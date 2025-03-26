@@ -9,22 +9,26 @@
 </head>
 
 <body>
-<header class="p-3 bg-dark text-white" th:fragment="header">
-    <div class="container">
-        <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
+<header class="p-3 bg-dark text-white position-relative" th:fragment="header">
+    <div class="container position-relative">
 
-            <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
-                <li><a id="home" href="#" class="nav-link px-2 text-secondary">Home</a></li>
-                <li><a id="categoryLink" href="#" class="nav-link px-2 text-secondary">카테고리</a></li>
+        <div class="position-absolute start-50 translate-middle-x" style="top: -40px; z-index: 1050;">
+            <a href="/" class="text-white fw-bold fs-2 text-uppercase text-decoration-none">YUNHO</a>
+        </div>
+
+        <div class="d-flex align-items-center justify-content-between mt-4">
+            <ul class="nav">
+                <li><a id="home" href="#" class="nav-link px-2 text-white">Home</a></li>
+                <li><a id="categoryLink" href="#" class="nav-link px-2 text-white">카테고리</a></li>
             </ul>
 
-            <div class="text-end ms-auto">
-                <span id="username" class="text-white me-2">username</span>
-                <a role="button" id="login" class="btn btn-outline-light me-2">로그인</a>
-                <a role="button" id="signup" class="btn btn-outline-light me-2">회원가입</a>
-                <a role="button" id="myPage" class="btn btn-outline-light me-2">내 정보</a>
-                <a role="button" id="sellerPage" class="btn btn-outline-light me-2">내 상품</a>
-                <a role="button" id="logout" class="btn btn-outline-light me-2">로그아웃</a>
+            <div class="d-flex align-items-center">
+                <span id="username" class="text-white me-3">username</span>
+                <a id="login" href="#" class="nav-link px-2 text-white">로그인</a>
+                <a id="signup" href="#" class="nav-link px-2 text-white">회원가입</a>
+                <a id="myPage" href="#" class="nav-link px-2 text-white">마이페이지</a>
+                <a id="sellerPage" href="#" class="nav-link px-2 text-white">판매자페이지</a>
+                <a id="logout" href="#" class="nav-link px-2 text-white">로그아웃</a>
             </div>
         </div>
     </div>
