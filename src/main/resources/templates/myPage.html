@@ -54,41 +54,55 @@
         <span th:each="error : ${errors}" th:text="${error.defaultMessage}"></span><br/>
     </div>
 
+    <h4 class="mb-3 mt-2 fw-bold">내 정보</h4>
     <div class="card p-4">
         <form id="profileForm" th:action="@{/myPage}" method="post">
-            <p><strong>이름:</strong>
-                <span th:text="${member.name}"></span>
-            </p>
-            <p><strong>이메일:</strong>
-                <span th:text="${member.email}"></span>
-            </p>
+            <div class="row mb-3">
+                <div class="col-md-2">
+                    <label><strong>이름</strong></label>
+                    <p th:text="${member.name}">이름</p>
+                </div>
 
-            <div>
-                <p><strong>전화번호:</strong>
-                    <input type="text" name="phoneNumber" class="form-control editable"
-                           th:value="${member.profileDto != null ? member.profileDto.phoneNumber : ''}"
-                           th:attr="data-original=${member.profileDto != null ? member.profileDto.phoneNumber : ''}" disabled>
-                </p>
-                <p><strong>나이:</strong>
-                    <input type="number" name="age" class="form-control editable"
-                           th:value="${member.profileDto != null and member.profileDto.age != 0 ? member.profileDto.age : ''}"
-                           th:attr="data-original=${member.profileDto != null and member.profileDto.age != 0 ? member.profileDto.age : ''}" disabled>
-                </p>
-                <p><strong>성별:</strong>
+                <div class="col-md-3">
+                    <label><strong>이메일</strong></label>
+                    <p th:text="${member.email}">이메일</p>
+                </div>
+
+                <div class="col-md-2">
+                    <label><strong>성별</strong></label>
                     <select name="gender" class="form-select editable"
                             th:attr="data-original=${member.profileDto != null ? member.profileDto.gender : ''}" disabled>
                         <option value=""></option>
                         <option value="MAN" th:selected="${member.profileDto != null and member.profileDto.gender == 'MAN'}">남자</option>
                         <option value="WOMAN" th:selected="${member.profileDto != null and member.profileDto.gender == 'WOMAN'}">여자</option>
                     </select>
-                </p>
+                </div>
 
-                <p><strong>소개:</strong>
+                <div class="col-md-2">
+                    <label><strong>나이</strong></label>
+                    <input type="number" name="age" class="form-control editable"
+                           th:value="${member.profileDto != null and member.profileDto.age != 0 ? member.profileDto.age : ''}"
+                           th:attr="data-original=${member.profileDto != null and member.profileDto.age != 0 ? member.profileDto.age : ''}" disabled>
+                </div>
+
+                <div class="col-md-3">
+                    <label><strong>전화번호</strong></label>
+                    <input type="text" name="phoneNumber" class="form-control editable"
+                           th:value="${member.profileDto != null ? member.profileDto.phoneNumber : ''}"
+                           th:attr="data-original=${member.profileDto != null ? member.profileDto.phoneNumber : ''}"  disabled>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-12">
+                    <label><strong>자기소개</strong></label>
                     <textarea name="introduction" class="form-control editable"
+                              rows="3"
                               th:text="${member.profileDto != null ? member.profileDto.introduction : ''}"
                               th:attr="data-original=${member.profileDto != null ? member.profileDto.introduction : ''}" disabled></textarea>
-                </p>
+                </div>
             </div>
+
 
             <div class="mt-3">
                 <button type="button" id="editButton" class="btn btn-primary" onclick="enableEdit()">수정</button>
@@ -99,6 +113,7 @@
             </div>
         </form>
     </div>
+
 </div>
 <footer id="footer">
     <hr>
