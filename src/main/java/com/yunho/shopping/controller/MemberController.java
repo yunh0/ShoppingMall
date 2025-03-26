@@ -5,7 +5,9 @@ import com.yunho.shopping.dto.MemberDto;
 import com.yunho.shopping.dto.ProfileDto;
 import com.yunho.shopping.dto.request.ProfileRequest;
 import com.yunho.shopping.dto.request.SignUpRequest;
+import com.yunho.shopping.dto.response.PurchaseHistoryResponse;
 import com.yunho.shopping.service.MemberService;
+import com.yunho.shopping.service.PurchaseHistoryService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -17,11 +19,14 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import java.util.List;
+
 @Controller
 @RequiredArgsConstructor
 public class MemberController {
 
     private final MemberService memberService;
+    private final PurchaseHistoryService purchaseHistoryService;
 
     @GetMapping("/signin")
     public String signIn(){
@@ -87,8 +92,10 @@ public class MemberController {
     ){
         MemberDto memberDto = memberService.searchMember(principal.getUsername())
                 .orElseThrow(() -> new EntityNotFoundException("사용자를 찾을 수 없습니다. username: " + principal.getUsername()));
+        List<PurchaseHistoryResponse> purchaseHistories = purchaseHistoryService.getPurchaseHistoryOrderByCreatedAtTop3(principal.getUsername());
 
         model.addAttribute("member", memberDto);
+        model.addAttribute("purchaseHistories", purchaseHistories);
 
         return "/myPage";
     }

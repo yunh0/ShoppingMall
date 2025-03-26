@@ -114,6 +114,38 @@
         </form>
     </div>
 
+    <br><br>
+
+    <h4 class="mb-3 mt-2 fw-bold">주문 내역</h4>
+    <div class="table-responsive">
+        <table class="table align-middle text-center">
+            <thead class="table-light">
+            <tr>
+                <th>주문일자</th>
+                <th>이미지</th>
+                <th>상품명</th>
+                <th>가격</th>
+                <th>수량</th>
+                <th>합계</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="history : ${purchaseHistories}">
+                <td th:text="${#temporals.format(history.createdAt, 'yyyy. MM. dd')}">2025. 03. 26</td>
+                <td>
+                    <img th:src="@{${history.productResponse.imagesPath[0]}}" alt="상품 이미지"
+                         style="width: 70px; height: 70px; object-fit: cover;">
+                </td>
+                <td th:text="${history.productResponse.productName}">상품명</td>
+                <td th:text="${#numbers.formatInteger(history.productResponse.price, 3, 'COMMA')} + '원'">100,000원</td>
+                <td th:text="${history.quantity}">1</td>
+                <td th:text="${#numbers.formatInteger(history.productResponse.price * history.quantity, 3, 'COMMA')} + '원'">100,000원</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+
 </div>
 <footer id="footer">
     <hr>
