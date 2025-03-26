@@ -111,7 +111,9 @@ public class MemberController {
             model.addAttribute("errors", bindingResult.getAllErrors());
             model.addAttribute("member", memberService.searchMember(principal.getUsername())
                     .orElseThrow(() -> new EntityNotFoundException("사용자를 찾을 수 없습니다. username: " + principal.getUsername())));
-
+            model.addAttribute("purchaseHistories",
+                    purchaseHistoryService.getPurchaseHistoryOrderByCreatedAtTop3(principal.getUsername())
+            );
             return "/myPage";
         }
 
