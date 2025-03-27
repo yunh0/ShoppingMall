@@ -3,7 +3,10 @@ package com.yunho.shopping.service;
 import com.yunho.shopping.domain.Category;
 import com.yunho.shopping.domain.Member;
 import com.yunho.shopping.domain.Product;
+import com.yunho.shopping.dto.MemberDto;
 import com.yunho.shopping.dto.ProductDto;
+import com.yunho.shopping.dto.request.ProductRequest;
+import com.yunho.shopping.dto.request.UpdateProductRequest;
 import com.yunho.shopping.dto.response.ProductResponse;
 import com.yunho.shopping.repository.CategoryRepository;
 import com.yunho.shopping.repository.MemberRepository;
@@ -16,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -30,6 +34,7 @@ public class ProductService {
     private final CategoryRepository categoryRepository;
     private final ProductImgService productImgService;
     private final PurchaseHistoryService purchaseHistoryService;
+    private final MemberService memberService;
 
     @Transactional(readOnly = true)
     public ProductDto findByProductId(Long productId){
@@ -82,5 +87,20 @@ public class ProductService {
         product.setCount(product.getCount() - quantity);
 
         purchaseHistoryService.savePurchaseHistory(product, userId, quantity);
+    }
+
+    public void updateProduct(Long productId, UpdateProductRequest productRequest, List<MultipartFile> newImages) {
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new EntityNotFoundException("상품을 찾을 수 없습니다. ID: " + productId));
+
+        product.setProductName(productRequest.getProductName());
+        product.setPrice(productRequest.getPrice());
+        product.setInfo(productRequest.getInfo());
+        product.setCount(productRequest.getCount());
+
+        if (newImages != null && !newImages.isEmpty() && newImages.stream().anyMatch(file -> !file.isEmpty())) {
+            productImgService.deleteImagesByProduct(productId);
+            productImgService.uploadImg(product, newImages);
+        }
     }
 }

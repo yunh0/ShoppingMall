@@ -7,6 +7,7 @@ import com.yunho.shopping.dto.CustomPrincipal;
 import com.yunho.shopping.dto.MemberDto;
 import com.yunho.shopping.dto.ProductDto;
 import com.yunho.shopping.dto.request.ProductRequest;
+import com.yunho.shopping.dto.request.UpdateProductRequest;
 import com.yunho.shopping.dto.response.ProductResponse;
 import com.yunho.shopping.dto.response.ProductWithSellerResponse;
 import com.yunho.shopping.service.*;
@@ -25,6 +26,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @Slf4j
@@ -59,11 +61,23 @@ public class ProductController {
     }
 
     @GetMapping("/product/{productId}")
-    public String showProductDetail(@PathVariable Long productId, Model model){
+    public String showProductDetail(
+            @PathVariable Long productId,
+            @AuthenticationPrincipal CustomPrincipal principal,
+            Model model
+    ){
         List<ProductImg> images = productImgService.getProductImages(productId);
         List<String> imagesPath = productImgService.getProductImagesPath(images);
         ProductDto productDto = productService.findByProductId(productId);
         ProductResponse productResponse = ProductResponse.from(productDto, imagesPath);
+
+        if(principal == null){
+            model.addAttribute("isOwner", false);
+        }
+        else{
+            Boolean isOwner = productDto.memberDto().userId().equals(principal.getUsername());
+            model.addAttribute("isOwner", isOwner);
+        }
 
         model.addAttribute("productResponse", productResponse);
 
@@ -130,5 +144,51 @@ public class ProductController {
         productService.saveProduct(productDto, images);
 
         return "redirect:/seller/sellerPage/product";
+    }
+
+    @GetMapping("/seller/sellerPage/product/{productId}/update")
+    public String updateProductView(
+            @PathVariable Long productId,
+            Model model
+    ){
+        ProductDto productDto = productService.findByProductId(productId);
+        List<String> images = productImgService.getProductImagesPath(
+                productImgService.getProductImages(productId)
+        );
+
+        UpdateProductRequest updateProductRequest = UpdateProductRequest.from(productDto);
+        ProductResponse productResponse = ProductResponse.from(productDto, images);
+
+        model.addAttribute("updateProductRequest", updateProductRequest);
+        model.addAttribute("productResponse", productResponse);
+
+        return "/updateProduct";
+    }
+
+    @PostMapping("/seller/sellerPage/product/{productId}/update")
+    public String updateProduct(
+            @PathVariable Long productId,
+            @RequestParam(value = "newImages", required = false) List<MultipartFile> newImages,
+            @ModelAttribute("updateProductRequest") @Valid UpdateProductRequest updateProductRequest,
+            BindingResult bindingResult,
+            Model model
+    ) {
+        if(bindingResult.hasErrors()){
+            ProductDto productDto = productService.findByProductId(productId);
+            List<String> images = productImgService.getProductImagesPath(
+                    productImgService.getProductImages(productId)
+            );
+
+            ProductResponse productResponse = ProductResponse.from(productDto, images);
+
+            model.addAttribute("updateProductRequest", updateProductRequest);
+            model.addAttribute("productResponse", productResponse);
+            model.addAttribute("errors", bindingResult.getAllErrors());
+            return "/updateProduct";
+        }
+
+        productService.updateProduct(productId, updateProductRequest, newImages);
+
+        return "redirect:/product/" + productId;
     }
 }

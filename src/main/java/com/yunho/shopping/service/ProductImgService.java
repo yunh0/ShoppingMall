@@ -1,7 +1,9 @@
 package com.yunho.shopping.service;
 
+import com.google.cloud.storage.Blob;
 import com.google.cloud.storage.BlobInfo;
 import com.google.cloud.storage.Storage;
+import com.google.cloud.storage.StorageOptions;
 import com.yunho.shopping.domain.Product;
 import com.yunho.shopping.domain.ProductImg;
 import com.yunho.shopping.repository.ProductImgRepository;
@@ -51,6 +53,31 @@ public class ProductImgService {
         storage.create(blobInfo, image.getBytes());
 
         return uuid;
+    }
+
+    public void deleteImagesByProduct(Long productId) {
+        List<ProductImg> images = productImgRepository.findByProduct_ProductId(productId);
+        List<String> imagesName = images.stream()
+                .map(ProductImg::getPath)
+                .toList();
+
+        deleteObject(imagesName);
+        productImgRepository.deleteByProduct_ProductId(productId);
+    }
+
+    private void deleteObject(List<String> imagesName) {
+        for(String name : imagesName){
+            Blob blob = storage.get(bucketName, name);
+            if (blob == null) {
+                System.out.println("The object " + name + " wasn't found in " + bucketName);
+                return;
+            }
+
+            Storage.BlobSourceOption precondition =
+                    Storage.BlobSourceOption.generationMatch(blob.getGeneration());
+
+            storage.delete(bucketName, name, precondition);
+        }
     }
 
     public List<ProductImg> getProductImages(Long productId){

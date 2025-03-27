@@ -22,9 +22,11 @@ public class Product extends AuditingFields {
     @Column(nullable = false)
     private String productName;
 
+    @Setter
     @Column(nullable = false)
     private Integer price;
 
+    @Setter
     @Column(nullable = false)
     private String info;
 
